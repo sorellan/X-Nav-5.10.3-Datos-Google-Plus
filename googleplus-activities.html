@@ -31,7 +31,7 @@
       // The provided key works for this sample only when run from
       // https://google-api-javascript-client.googlecode.com/hg/samples/authSample.html
       // To use in your own application, replace this API key with your own.
-      var apiKey = '';
+      var apiKey = 'AIzaSyDSOjF-cLl8mNzV9zGf32SHZOOCDluhSvA';
 
       // Use a button to handle authentication the first time.
       function handleClientLoad() {
@@ -43,7 +43,7 @@
       function makeApiCall() {
         gapi.client.load('plus', 'v1', function() {
           var request = gapi.client.plus.people.get({
-            'userId': ''
+            'userId': '109968390529970241538'
             // For instance: 
             // 'userId': '+GregorioRobles'
           });
@@ -53,8 +53,24 @@
             image.src = resp.image.url;
             heading.appendChild(image);
             heading.appendChild(document.createTextNode(resp.displayName));
-
             document.getElementById('content').appendChild(heading);
+
+            request = gapi.client.plus.activities.list({
+              'userId': '109968390529970241538',
+              'collection' : 'public'
+            });
+            request.execute(function(resp) {
+              var list = document.createElement('ul');
+              var elem;
+              resp.items.forEach(function(entry) {
+                elem = document.createElement('li');
+                elem.innerHTML = entry.title + ' ' + '<a href="' + entry.url + '">Ir a la actividad</a>';
+                list.appendChild(elem); 
+                if(entry.location)
+                  elem.innerHTML += ' ' + entry.location.position.latitude + ' ' + entry.location.position.longitude;
+              });
+              document.getElementById('content').appendChild(list);
+            });
           });
         });
       }
